@@ -1,0 +1,15 @@
+{
+    "Jazz": null,
+    "TSF Jazz": "http://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3",
+    "FIP jazz": "https://icecast.radiofrance.fr/fipjazz-midfi.mp3?id=radiofrance",
+    "Classic": null,
+    "France Musique": "http://direct.francemusique.fr/live/francemusique-midfi.mp3",
+    "Radio Classique": "http://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3",
+    "BBC 3": "http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d96000.norewind.m3u8",
+    "Electro": null,
+    "Noods": "https://noods-radio.radiocult.fm/stream",
+    "FIP electro": "https://icecast.radiofrance.fr/fipelectro-midfi.mp3?id=radiofrance",
+    "Other": null,
+    "FIP main": "http://direct.fipradio.fr/live/fip-midfi.mp3",
+    "BBC 6 Music": "http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d96000.norewind.m3u8"
+}

@@ -10,28 +10,34 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtCore import QUrl
-from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QTextBrowser, QLabel
 from PySide6.QtCore import Qt
 from PySide6.QtCore import QFile, QTextStream
 import os
 from PySide6.QtGui import QIcon
+import json
+from PySide6.QtWidgets import QMessageBox
+from markdown import markdown
 
-STATIONS = {
-    "Jazz": None,
-    "TSF Jazz": "http://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3",
-    "FIP jazz": "https://icecast.radiofrance.fr/fipjazz-midfi.mp3?id=radiofrance",
-    "Classic": None,
-    "France Musique": "http://direct.francemusique.fr/live/francemusique-midfi.mp3",
-    "Radio Classique": "http://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3",
-    "BBC 3": "http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d96000.norewind.m3u8",
-    "Electro": None,
-    "Noods": "https://noods-radio.radiocult.fm/stream",
-    "FIP electro": "https://icecast.radiofrance.fr/fipelectro-midfi.mp3?id=radiofrance",
-    "Other": None,
-    "FIP main": "http://direct.fipradio.fr/live/fip-midfi.mp3",
-    "BBC 6 Music": "http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d96000.norewind.m3u8",
-    "-": None,
-}
+
+def get_resource_path(filename):
+    """Get the absolute path to a resource file."""
+    if hasattr(sys, "_MEIPASS"):
+        # For bundled files inside the PyInstaller package
+        return os.path.join(sys._MEIPASS, filename)
+    else:
+        # For development mode
+        return os.path.join(os.path.dirname(__file__), filename)
+
+
+def get_external_file_path(filename):
+    """Get the absolute path to an external file (e.g., stations.json)."""
+    # Look for the file in the same directory as the executable
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(os.path.dirname(sys.executable), filename)
+    else:
+        # In development mode, look in the script's directory
+        return os.path.join(os.path.dirname(__file__), filename)
 
 
 class RadioPlayer(QWidget):
@@ -39,7 +45,9 @@ class RadioPlayer(QWidget):
         super().__init__()
         self.setWindowTitle("R/F")
         self.setMinimumSize(200, 200)
-        self.always_on_top = False  # Track the state
+        self.always_on_top = False
+
+        STATIONS = self.load_stations()
 
         if hasattr(sys, "_MEIPASS"):
             icon_path = os.path.join(sys._MEIPASS, "radio.ico")
@@ -114,7 +122,26 @@ class RadioPlayer(QWidget):
         self.toggle_button.clicked.connect(self.toggle_always_on_top)
         volume_layout.addWidget(self.toggle_button)
 
+        # Add a button to open the README file
+        readme_btn = QPushButton("?")
+        readme_btn.setObjectName("readme_btn")
+        readme_btn.clicked.connect(self.open_readme)
+        volume_layout.addWidget(readme_btn)
+
         main_layout.addWidget(volume_container)  # Add the container to the main layout
+
+    # Load STATIONS from an external JSON file
+    def load_stations(self):
+        stations_file = get_external_file_path("stations.json")
+        try:
+            with open(stations_file, "r", encoding="utf-8") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print(f"Error: {stations_file} not found.")
+            return {}
+        except json.JSONDecodeError:
+            print(f"Error: Failed to parse {stations_file}.")
+            return {}
 
     def play_station(self, url, name, button):
         for btn in self.buttons:
@@ -132,12 +159,7 @@ class RadioPlayer(QWidget):
 
     def load_styles(self):
         # Determine the path to the QSS file
-        if hasattr(sys, "_MEIPASS"):
-            # Use the temporary folder created by PyInstaller
-            qss_path = os.path.join(sys._MEIPASS, "styles.qss")
-        else:
-            # Use the local path during development
-            qss_path = "styles.qss"
+        qss_path = get_resource_path("styles.qss")
 
         # Load the QSS file
         file = QFile(qss_path)
@@ -174,6 +196,34 @@ class RadioPlayer(QWidget):
         self.toggle_button.style().unpolish(self.toggle_button)
         self.toggle_button.style().polish(self.toggle_button)
 
+    def open_readme(self):
+        readme_path = get_resource_path("README.md")
+        if os.path.exists(readme_path):
+            with open(readme_path, "r", encoding="utf-8") as file:
+                readme_content = file.read()
+
+            # Convert Markdown to HTML
+            html_content = markdown(readme_content)
+
+            # Create a dialog to display the README
+            dialog = QDialog(self)
+            dialog.setWindowTitle("README")
+            dialog.setMinimumSize(600, 400)
+
+            layout = QVBoxLayout(dialog)
+            text_browser = QTextBrowser(dialog)
+            text_browser.setHtml(html_content)  # Set the HTML content
+            layout.addWidget(text_browser)
+
+            dialog.setLayout(layout)
+            dialog.exec()
+        else:
+            msg = QMessageBox(self)
+            msg.setWindowTitle("Error")
+            msg.setText("README.md file not found.")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -185,8 +235,4 @@ if __name__ == "__main__":
     sys.exit(app.exec())
 
 
-# pyinstaller --clean --onefile --windowed --icon=radio.ico --name=RadioF --add-data "styles.qss;." app.py
-# pyinstaller --clean --onefile --windowed --icon=radio.ico --name=RadioF --add-data "radio.ico;." --add-data "styles.qss;." app.py
-# https://streamurl.link/
-# https://gist.github.com/bpsib/67089b959e4fa898af69fea59ad74bc3
-# https://community.roonlabs.com/t/new-fip-streaming-url/87335/7
+# pyinstaller --clean --onefile --windowed --icon=radio.ico --name=RadioF --add-data "radio.ico;." --add-data "styles.qss;." --add-data "README.md;." app.py

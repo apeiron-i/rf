@@ -41,6 +41,16 @@ QPushButton#on_btn:pressed {
     background-color: #0f2a41;
 }
 
+QPushButton#readme_btn {
+    background-color: transparent; /* Green color for the ON state */
+    color: #838383;
+    font-weight: bold;
+}
+QPushButton#readme_btn:hover {
+    background-color: transparent;
+    color: #4b7394;
+}
+
 QPushButton#toggle_btn_on {
     background-color: transparent; /* Green color for the ON state */
     color: #FFF;
