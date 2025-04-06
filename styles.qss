@@ -1,0 +1,73 @@
+QPushButton {
+    background-color: #4b7394;
+    color: white;
+    border-radius: 10px;
+    padding: 4px 4px;
+    font-size: 12px;
+}
+QPushButton:hover {
+    background-color: #537088;
+}
+QPushButton:pressed {
+    background-color: #385369;
+}
+
+QPushButton#stop_btn {
+    background-color: transparent;
+    color: #838383;
+    /* font-weight: bold; */
+}
+QPushButton#stop_btn:hover {
+    background-color: transparent;
+    color: #4b7394;
+}
+QPushButton#stop_btn:pressed {
+    background-color: transparent;
+}
+
+QLabel#now_playing_label {
+    margin-bottom: 10px; /* Adjust the value as needed */
+}
+
+QPushButton#on_btn {
+    background-color: #1b4261; /* Green color for the ON state */
+    color: white;
+    font-weight: bold;
+}
+QPushButton#on_btn:hover {
+    background-color: #13334e;
+}
+QPushButton#on_btn:pressed {
+    background-color: #0f2a41;
+}
+
+QPushButton#toggle_btn_on {
+    background-color: transparent; /* Green color for the ON state */
+    color: #FFF;
+    /* font-weight: bold; */
+    font-size: 16px;
+}
+QPushButton#toggle_btn_off {
+    background-color: transparent; /* Green color for the ON state */
+    color: #686868;
+    /* font-weight: bold; */
+    font-size: 16px;
+}
+QPushButton#toggle_btn:hover {
+    background-color: transparent;
+}
+QPushButton#toggle_btn:pressed {
+    background-color: transparent;
+}
+
+
+/* Style for group titles */
+QLabel#group_title {
+    font-size: 10px;
+    /* font-weight: bold; */
+    color: #686868;
+    /* padding: 5px; */
+    /* margin: 10px 0; */
+    /* border-radius: 5px; */
+    /* text-align: left; */
+}
