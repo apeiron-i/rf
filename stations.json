@@ -2,6 +2,8 @@
     "Jazz": null,
     "TSF Jazz": "http://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3",
     "FIP jazz": "https://icecast.radiofrance.fr/fipjazz-midfi.mp3?id=radiofrance",
+    "JazzRadio Blues": "https://jazzblues.ice.infomaniak.ch/jazzblues-high.mp3",
+    "JazzRadio Latin": "https://jazz-wr09.ice.infomaniak.ch/jazz-wr09-128.mp3",
     "Classic": null,
     "France Musique": "http://direct.francemusique.fr/live/francemusique-midfi.mp3",
     "Radio Classique": "http://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3",
