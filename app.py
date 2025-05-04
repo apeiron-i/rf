@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QScrollArea,
     QHBoxLayout,
 )
-from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput, QMediaDevices
 from PySide6.QtCore import QUrl
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QTextBrowser, QLabel
 from PySide6.QtCore import Qt
@@ -62,6 +62,10 @@ class RadioPlayer(QWidget):
         self.audio_output = QAudioOutput()
         self.player = QMediaPlayer()
         self.player.setAudioOutput(self.audio_output)
+
+        # Create an instance of QMediaDevices
+        self.media_devices = QMediaDevices()
+        self.media_devices.audioOutputsChanged.connect(self.update_audio_output)
 
         self.player.errorOccurred.connect(self.update_now_playing_on_error)
 
@@ -223,6 +227,18 @@ class RadioPlayer(QWidget):
             msg.setText("README.md file not found.")
             msg.setStandardButtons(QMessageBox.Ok)
             msg.exec()
+
+    def update_audio_output(self):
+        # Get the list of available audio output devices
+        available_outputs = QMediaDevices.audioOutputs()
+
+        if available_outputs:
+            # Use the default audio output device
+            default_output = available_outputs[0]
+
+            # Update the audio output device
+            self.audio_output.setDevice(default_output)
+            print(f"Audio output updated to: {default_output.description()}")
 
 
 if __name__ == "__main__":
